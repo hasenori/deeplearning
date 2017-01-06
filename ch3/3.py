@@ -3,38 +3,13 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pylab as plt
-
+from common.functions import sigmoid, softmax, step_function, identity_function, relu
 #画像テスト用データインポート
 #--------------------------------
 import sys, os
 from dataset.mnist import load_mnist
+from PIL import Image
 #--------------------------------
-
-#活性化関数一覧
-#--------------------------------
-#ステップ関数
-def step_function(x):
-    return np.array(x > 0, dtype=np.int)
-
-#シグモイド関数
-def sigmoid(x):
-    return 1 / (1 + np.exp(-x))    
-
-#ReLu関数    
-def relu(x):
-    return np.maximum(0,x)
-
-#恒等関数
-def identity_function(x):
-    return x
-
-#ソフトマックス関数
-def softmax(a):
-    c = np.max(a)
-    exp_a = np.exp(a - c) #指数関数 cは、オーバーフロー対策
-    sum_exp_a = np.sum(exp_a) #指数関数の和
-    y = exp_a / sum_exp_a
-    return y
 
 a = np.array([10000.3,2.9,4.0])
 y = softmax(a)
@@ -89,18 +64,19 @@ def forward(network, x):
 network = init_network()
 x = np.array([1.0,0.5])
 y = forward(network, x)
-print(y)
 
 #--------------------------------
 # MINISTデータセット
 #--------------------------------
+def img_show(img):
+    pil_img = Image.fromarray(np.uint8(img))
+    pil_img.show()
+    pil_img.save('../../../../var/www/html/images/image01.png')
+
 # 最初の呼び出しは数分待ちます・・・
 (x_train, t_train), (x_test, t_test) = load_mnist(flatten=True, normalize=False)
 
-print(x_train.shape)
-
-
-
-
-
-
+img = x_train[0]
+label = t_train[0]
+img = img.reshape(28, 28)
+img_show(img)
